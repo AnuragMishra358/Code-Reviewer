@@ -13,7 +13,7 @@ export default function History() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      router.push("/login");
+      router.push("/auth/login");
     }
     const fetchHistory = async () => {
       const token = localStorage.getItem("token");

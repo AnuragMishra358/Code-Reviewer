@@ -1,5 +1,6 @@
 "use client";
 
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 
 export default function Navbar() {
@@ -8,6 +9,7 @@ export default function Navbar() {
       <h1 className="font-bold">Code Reviewer</h1>
 
       <div className="space-x-4">
+        <button onClick={()=>signOut()}>LogOut</button>
         <Link href="/dashboard">Dashboard</Link>
         <Link href="/dashboard/history">History</Link>
       </div>

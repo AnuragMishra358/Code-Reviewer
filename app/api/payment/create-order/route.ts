@@ -16,6 +16,8 @@ export async function POST() {
 
     const order = await razorpay.orders.create(options);
 
+    console.log("value of order => ",order);
+
     return NextResponse.json({ order });
   } catch (error) {
     return NextResponse.json(
