@@ -9,7 +9,7 @@ export default function Navbar() {
       <h1 className="font-bold">Code Reviewer</h1>
 
       <div className="space-x-4">
-        <button onClick={()=>signOut()}>LogOut</button>
+        <button onClick={()=>localStorage.removeItem("token")}>Logout</button>
         <Link href="/dashboard">Dashboard</Link>
         <Link href="/dashboard/history">History</Link>
       </div>
