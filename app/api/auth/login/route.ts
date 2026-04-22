@@ -19,7 +19,10 @@ export async function POST(req: Request) {
     }
 
     if (user.provider) {
-      return "Please login using Google/GitHub";
+      return NextResponse.json(
+        { error: "Please login using Google/GitHub" },
+        { status: 401 },
+      );
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
