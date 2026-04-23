@@ -1,6 +1,5 @@
 "use client";
 
-import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -12,7 +11,6 @@ export default function Navbar() {
 
       <div className="space-x-4">
         <button onClick={()=>{
-          signOut();
           localStorage.removeItem("token");
           router.push("/auth/login");
         }}>Logout</button>

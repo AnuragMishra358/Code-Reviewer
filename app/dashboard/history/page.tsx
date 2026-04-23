@@ -3,17 +3,15 @@
 import { useEffect, useState } from "react";
 import ReviewCard from "@/components/ReviewCard";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 
 export default function History() {
   const [reviews, setReviews] = useState([]);
-  const {data}=useSession();
   const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    if (!token && !data) {
+    if (!token) {
       router.push("/auth/login");
     }
     const fetchHistory = async () => {

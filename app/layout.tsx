@@ -1,10 +1,7 @@
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
-import Providers from "./providers"
-
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +23,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
- 
   return (
     <html
       lang="en"
@@ -37,10 +33,8 @@ export default async function RootLayout({
           src="https://checkout.razorpay.com/v1/checkout.js"
           strategy="beforeInteractive"
         />
-        <Providers>
-            {children}
-        </Providers>
-           
+
+        {children}
       </body>
     </html>
   );

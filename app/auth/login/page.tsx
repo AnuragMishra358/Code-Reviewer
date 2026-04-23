@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
 
 export default function Login() {
   const router = useRouter();
@@ -66,10 +65,6 @@ export default function Login() {
         >
           {loading ? "Logging in..." : "Login"}
         </button>
-
-        <button onClick={() => signIn("google", { callbackUrl: "/dashboard" })} className="w-full bg-blue-500 py-2 rounded mb-2">Login with Google</button>
-
-        <button onClick={() => signIn("github", { callbackUrl: "/dashboard" })} className="w-full bg-blue-500 py-2 rounded ">Login with Github</button>
 
         <p className="text-sm text-gray-400 mt-4 text-center">
           Do not have an account?{" "}

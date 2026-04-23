@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import CodeEditor from "@/components/CodeEditor";
 import ReviewOutput from "@/components/ReviewOutput";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+
 
 export default function Dashboard() {
   const [code, setCode] = useState("");
@@ -12,19 +12,16 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [plan, setPlan] = useState("free");
   const [remaining, setRemaining] = useState(5);
-  const { data: session, status } = useSession();
+  
 
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (status === "loading") return; // ⛔ wait for session
-
-    if (!token && !session) {
+     const token = localStorage.getItem("token");
+    if (!token ) {
       router.push("/auth/login");
     }
-  }, [status, session]);
+  }, []);
 
   const handleUpgrade = async () => {
     const token = localStorage.getItem("token");
