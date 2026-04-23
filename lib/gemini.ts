@@ -1,37 +1,30 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-// Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-
-// Main function to review code
 export const reviewCode = async (
   code: string,
   language: string = "JavaScript",
 ): Promise<string> => {
   try {
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash", // fast + free tier
-    });
-
-    // 🔥 Strong prompt (important for quality output)
     const prompt = `
 You are a senior software engineer and expert code reviewer.
 
-Analyze the following ${language} code and provide a structured response.
+IMPORTANT:
+- Use emojis for section headings
+- Keep output clean and well spaced
+- Use bullet points
+- Use markdown formatting
+- Keep it concise and readable
 
-Follow this format strictly:
+Analyze the following ${language} code and provide:
 
 ### Bugs
-- List any errors or potential bugs
+- ...
 
 ### Improvements
-- Suggest improvements for readability, performance, or structure
+- ...
 
 ### Best Practices
-- Mention best practices that are missing or violated
+- ...
 
 ### Optimized Code
-Provide an improved version of the code:
 \`\`\`${language}
 ...
 \`\`\`
@@ -40,15 +33,34 @@ Code:
 ${code}
 `;
 
-    const result = await model.generateContent(prompt);
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: prompt }],
+            },
+          ],
+        }),
+      },
+    );
 
-    const response = result.response;
-    const text = response.text();
+    const data = await res.json();
 
-    return text || "No feedback generated.";
-  } catch (error: any) {
+    console.log("GEMINI RAW RESPONSE:", JSON.stringify(data, null, 2));
+
+    return (
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "No feedback generated."
+    );
+  } catch (error) {
     console.error("Gemini Error:", error);
-
-    return "Error generating review. Please try again later.";
+    return "Error generating review.";
   }
 };

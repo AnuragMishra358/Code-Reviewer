@@ -53,6 +53,7 @@ export async function POST(req: Request) {
     const dailyLimit = user.plan === "pro" ? 50 : 5;
 
     if (todayReviewsCount >= dailyLimit) {
+      console.log("daily limit reached");
       return NextResponse.json(
         { error: `Daily limit reached (${dailyLimit} reviews/day)` },
         { status: 403 },

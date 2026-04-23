@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import CodeEditor from "@/components/CodeEditor";
 import ReviewOutput from "@/components/ReviewOutput";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function Dashboard() {
   const [code, setCode] = useState("");
@@ -11,13 +12,14 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [plan, setPlan] = useState("free");
   const [remaining, setRemaining] = useState(5);
+  const {data}=useSession();
 
   const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    if (!token) {
+    if (!token&&!data) {
       router.push("/auth/login");
     }
   }, []);
@@ -33,6 +35,12 @@ export default function Dashboard() {
     });
 
     const data = await res.json();
+    console.log("data => ",data);
+
+    if (!res.ok || !data.order) {
+      alert("Order creation failed");
+      return;
+    }
 
     const options = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -82,6 +90,7 @@ export default function Dashboard() {
 
     const data = await res.json();
 
+    // console.log("data=> ",data);
     setReview(data.feedback);
     setRemaining(data.remaining);
     setPlan(data.plan);
