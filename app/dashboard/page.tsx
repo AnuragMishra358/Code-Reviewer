@@ -12,17 +12,19 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [plan, setPlan] = useState("free");
   const [remaining, setRemaining] = useState(5);
-  const {data}=useSession();
+  const { data: session, status } = useSession();
 
   const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    if (!token&&!data) {
+    if (status === "loading") return; // ⛔ wait for session
+
+    if (!token && !session) {
       router.push("/auth/login");
     }
-  }, []);
+  }, [status, session]);
 
   const handleUpgrade = async () => {
     const token = localStorage.getItem("token");
@@ -35,7 +37,7 @@ export default function Dashboard() {
     });
 
     const data = await res.json();
-    console.log("data => ",data);
+    console.log("data => ", data);
 
     if (!res.ok || !data.order) {
       alert("Order creation failed");
