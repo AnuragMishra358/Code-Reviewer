@@ -8,6 +8,7 @@ export default function ReviewCard({ review }: any) {
       <pre className="mt-2 text-sm overflow-x-auto">
         {review.code.slice(0, 200)}...
       </pre>
+      <p className="text-sm text-gray-500">{review.feedback}</p>
     </div>
   );
 }

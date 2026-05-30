@@ -16,11 +16,11 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
 
     const page = Number(searchParams.get("page")) || 0;
-    const limit = Number(searchParams.get("limit")) || 10;
+    const limit = Number(searchParams.get("limit")) || 5;
 
     const reviews = await Review.find({ userId: userData.userId })
       .sort({ createdAt: -1 })
-      .select("code language createdAt")
+      .select("code feedback language createdAt")
       .skip(page * limit)
       .limit(limit);
 

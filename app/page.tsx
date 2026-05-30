@@ -69,48 +69,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Pricing Section */}
-      <div className="mt-24 text-center">
-        <h2 className="text-3xl font-bold mb-10">Pricing</h2>
-
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-
-          {/* Free Plan */}
-          <div className="p-6 border rounded-lg bg-gray-900">
-            <h3 className="text-xl font-bold mb-2">Free</h3>
-            <p className="text-gray-400 mb-4">₹0/month</p>
-            <ul className="text-gray-400 space-y-2 mb-6">
-              <li>✔ 5 reviews/day</li>
-              <li>✔ Basic AI feedback</li>
-            </ul>
-            <button
-              onClick={() => router.push("/auth/signup")}
-              className="w-full border py-2 rounded"
-            >
-              Start Free
-            </button>
-          </div>
-
-          {/* Pro Plan */}
-          <div className="p-6 border rounded-lg bg-blue-600">
-            <h3 className="text-xl font-bold mb-2">Pro</h3>
-            <p className="mb-4">₹1/month</p>
-            <ul className="space-y-2 mb-6">
-              <li>✔ 50 reviews/day</li>
-              <li>✔ Advanced AI insights</li>
-              <li>✔ Priority performance</li>
-            </ul>
-            <button
-              onClick={() => router.push("/auth/signup")}
-              className="w-full bg-black py-2 rounded"
-            >
-              Upgrade Now
-            </button>
-          </div>
-
-        </div>
-      </div>
-
       {/* Footer */}
       <div className="mt-24 text-center text-gray-500 pb-6">
         © 2026 CodeReviewer. Built by Anurag 

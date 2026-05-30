@@ -5,131 +5,100 @@ import CodeEditor from "@/components/CodeEditor";
 import ReviewOutput from "@/components/ReviewOutput";
 import { useRouter } from "next/navigation";
 
-
 export default function Dashboard() {
   const [code, setCode] = useState("");
   const [review, setReview] = useState("");
   const [loading, setLoading] = useState(false);
-  const [plan, setPlan] = useState("free");
-  const [remaining, setRemaining] = useState(5);
-  
+
+  // ✅ language state
+  const [language, setLanguage] = useState("javascript");
 
   const router = useRouter();
 
   useEffect(() => {
-     const token = localStorage.getItem("token");
-    if (!token ) {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
       router.push("/auth/login");
     }
   }, []);
-
-  const handleUpgrade = async () => {
-    const token = localStorage.getItem("token");
-
-    const res = await fetch("/api/payment/create-order", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await res.json();
-    console.log("data => ", data);
-
-    if (!res.ok || !data.order) {
-      alert("Order creation failed");
-      return;
-    }
-
-    const options = {
-      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-      amount: data.order.amount,
-      currency: "INR",
-      name: "Code Reviewer SaaS",
-      description: "Upgrade to Pro",
-      order_id: data.order.id,
-
-      handler: async function (response: any) {
-        await fetch("/api/payment/verify", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            ...response,
-          }),
-        });
-
-        alert("🎉 Upgraded to Pro!");
-        location.reload();
-      },
-    };
-
-    const rzp = new (window as any).Razorpay(options);
-    rzp.open();
-  };
 
   const handleReview = async () => {
     const token = localStorage.getItem("token");
 
     setLoading(true);
 
-    const res = await fetch("/api/review", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        code,
-        language: "javascript",
-      }),
-    });
+    try {
+      const res = await fetch("/api/review", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          code,
+          language,
+        }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    // console.log("data=> ",data);
-    setReview(data.feedback);
-    setRemaining(data.remaining);
-    setPlan(data.plan);
-    setLoading(false);
+      if (!res.ok) {
+        alert(data.error);
+        return;
+      }
+
+      setReview(data.feedback);
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="p-6 space-y-4">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+    <div className="p-6 space-y-6">
+      {/* Title */}
+      <h1 className="text-3xl font-bold text-white">AI Code Reviewer</h1>
 
-      <div className="flex justify-between items-center p-4 bg-gray-900 rounded-lg">
+      {/* Language Selector */}
+      <div className="flex justify-between">
         <div>
-          <p className="text-sm text-gray-400">Plan</p>
-          <p className="font-bold capitalize">{plan}</p>
-        </div>
+          <label className="block mb-2 text-sm font-medium text-gray-300">
+            Select Language
+          </label>
 
-        <div>
-          <p className="text-sm text-gray-400">Remaining</p>
-          <p className="font-bold">{remaining}</p>
-        </div>
-
-        {plan === "free" && (
-          <button
-            onClick={handleUpgrade}
-            className="bg-blue-500 px-4 py-2 rounded"
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            className="bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-2"
           >
-            Upgrade 🚀
-          </button>
-        )}
+            <option value="javascript">JavaScript</option>
+            <option value="typescript">TypeScript</option>
+            <option value="python">Python</option>
+            <option value="cpp">C++</option>
+            <option value="java">Java</option>
+            <option value="c">C</option>
+            <option value="go">Go</option>
+            <option value="rust">Rust</option>
+          </select>
+        </div>
+
+        {/* Review Button */}
+        <button
+          onClick={handleReview}
+          disabled={loading}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg disabled:opacity-50"
+        >
+          {loading ? "Reviewing..." : "Review Code"}
+        </button>
       </div>
 
+      {/* Editor */}
       <CodeEditor code={code} setCode={setCode} />
 
-      <button
-        onClick={handleReview}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-      >
-        {loading ? "Reviewing..." : "Review Code"}
-      </button>
-
+      {/* Output */}
       {review && <ReviewOutput review={review} />}
     </div>
   );

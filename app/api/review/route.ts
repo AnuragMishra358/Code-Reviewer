@@ -28,38 +28,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Code is required" }, { status: 400 });
     }
 
-    const today = new Date();
-
-    const startOfDay = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate(),
-    );
-
-    const endOfDay = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() + 1,
-    );
-
-    const todayReviewsCount = await Review.countDocuments({
-      userId: user._id,
-      createdAt: {
-        $gte: startOfDay,
-        $lt: endOfDay,
-      },
-    });
-
-    const dailyLimit = user.plan === "pro" ? 50 : 5;
-
-    if (todayReviewsCount >= dailyLimit) {
-      console.log("daily limit reached");
-      return NextResponse.json(
-        { error: `Daily limit reached (${dailyLimit} reviews/day)` },
-        { status: 403 },
-      );
-    }
-
     // 🤖 Call Gemini
     const feedback = await reviewCode(code, language);
 
@@ -71,14 +39,8 @@ export async function POST(req: Request) {
       feedback,
     });
 
-    // 📈 Increase usage
-    user.reviewsUsed += 1;
-    await user.save();
-
     return NextResponse.json({
       feedback,
-      remaining : dailyLimit - todayReviewsCount - 1,
-      plan:user.plan
     });
   } catch (error) {
     console.error(error);

@@ -75,6 +75,16 @@ export default function Login() {
             Signup
           </span>
         </p>
+
+        <p className="text-sm text-gray-400 mt-4 text-center">
+          Want to go Home?{" "}
+          <span
+            className="text-blue-400 cursor-pointer"
+            onClick={() => router.push("/")}
+          >
+            Home
+          </span>
+        </p>
       </div>
     </div>
   );
