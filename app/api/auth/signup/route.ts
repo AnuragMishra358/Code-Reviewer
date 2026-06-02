@@ -10,6 +10,7 @@ export async function POST(req: Request) {
     await connectDB();
 
     const existingUser = await User.findOne({ email });
+    
     if (existingUser) {
       return NextResponse.json(
         { error: "User already exists" },

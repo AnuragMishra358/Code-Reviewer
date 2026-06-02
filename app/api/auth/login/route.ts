@@ -11,6 +11,7 @@ export async function POST(req: Request) {
     await connectDB();
 
     const user = await User.findOne({ email });
+
     if (!user) {
       return NextResponse.json(
         { error: "Invalid credentials" },
@@ -18,14 +19,8 @@ export async function POST(req: Request) {
       );
     }
 
-    if (user.provider) {
-      return NextResponse.json(
-        { error: "Please login using Google/GitHub" },
-        { status: 401 },
-      );
-    }
-
     const isMatch = await bcrypt.compare(password, user.password);
+    
     if (!isMatch) {
       return NextResponse.json(
         { error: "Invalid credentials" },

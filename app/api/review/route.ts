@@ -9,7 +9,6 @@ export async function POST(req: Request) {
   try {
     await connectDB();
 
-    // 🔐 Get user from token
     const userData = getUserFromRequest(req as any);
 
     if (!userData) {
@@ -28,10 +27,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Code is required" }, { status: 400 });
     }
 
-    // 🤖 Call Gemini
     const feedback = await reviewCode(code, language);
 
-    // 💾 Save review in DB
     await Review.create({
       userId: user._id,
       code,

@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 export default function History() {
   const [reviews, setReviews] = useState([]);
 
-  // ✅ pagination state
   const [page, setPage] = useState(0);
 
   const router = useRouter();

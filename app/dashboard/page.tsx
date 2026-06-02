@@ -9,8 +9,6 @@ export default function Dashboard() {
   const [code, setCode] = useState("");
   const [review, setReview] = useState("");
   const [loading, setLoading] = useState(false);
-
-  // ✅ language state
   const [language, setLanguage] = useState("javascript");
 
   const router = useRouter();

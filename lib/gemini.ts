@@ -53,8 +53,6 @@ ${code}
 
     const data = await res.json();
 
-    console.log("GEMINI RAW RESPONSE:", JSON.stringify(data, null, 2));
-
     return (
       data?.candidates?.[0]?.content?.parts?.[0]?.text ||
       "No feedback generated."
